@@ -1,12 +1,14 @@
-# propositions.py 1.0
-# @author: github.com/alin-c
-#
-# Displays the truth table of a given complex proposition and determines
-# its type:
-# - tautology: all interpretations are true;
-# - satisfiable: it exists a true interpretation;
-# - contingent: it exists at least one true and one false interpretation;
-# - unsatisfiable: all interpretations are false.
+"""
+propositions.py 1.0
+@author: github.com/alin-c
+
+Displays the truth table of a given complex proposition and determines
+its type:
+- tautology: all interpretations are true;
+- satisfiable: it exists a true interpretation;
+- contingent: it exists at least one true and one false interpretation;
+- unsatisfiable: all interpretations are false.
+"""
 
 import re
 import itertools
@@ -15,7 +17,7 @@ fixed_chars = {
     "~": "¬",
     "&": " ∧ ",
     "|": " ∨ ",
-    "+": " ⊕  ",
+    "+": " ⊕  ",    # 2 spaces needed after it, for correct display
     ">": " → ",
     "<": " ≡ ",
     "(": "(",
@@ -229,7 +231,6 @@ def proposition_matcher(input_string):
     Validates the input, creates global varaibles for each simple porposition,
     returns an object with the tokens.
     """
-    # global fixed_chars
     global initial_string
 
     input_string = re.sub(r"\s", "", input_string.lower())
@@ -244,8 +245,8 @@ def proposition_matcher(input_string):
         (?:(\d)|                # 1 digits
         ([^a-z()~&|+<>])|       # 2 all unallowed characters
         ([a-z]{2,})|            # 3 adjacent letters
-        (\([^(~a-z])|           # 4 a group can begin only with: ( ~ or a-z
-        ([^a-z)]\))|            # 5 a group can end only with: ) or a-z
+        (\([^(~a-z])|           # 4 a group can only begin with: ( ~ or a-z
+        ([^a-z)]\))|            # 5 a group can only end with: ) or a-z
         ([a-z)]~)|              # 6 ~ between propositions or at the end
         ([^)a-z][&|+<>]|        # 7 binary operators must have exactly 2 terms
             [&|+<>][^a-z(~]|
@@ -260,26 +261,26 @@ def proposition_matcher(input_string):
         if matcher.group(1):
             message = f"Input cannot contain digits (ex. {matcher.group(1)})!"
         elif matcher.group(2):
-            message = (f"Input cannot contain unallowed characters \
-                     (ex. {matcher.group(2)})!")
+            message = "Input cannot contain unallowed characters (ex." \
+                + f" {matcher.group(2)})!"
         elif matcher.group(3):
-            message = f"Every simple proposition can only be \
-                represented by a single letter! (ex. {matcher.group(3)})!"
+            message = "Every simple proposition can only be represented by" \
+                + f" a single letter! (ex. {matcher.group(3)})!"
         elif matcher.group(4):
-            message = f"A group can only begin with: ( ~ or letter! \
-                 (ex. {matcher.group(4)})!"
+            message = "A group can only begin with: ( ~ or letter!" \
+                + f" (ex. {matcher.group(4)})!"
         elif matcher.group(5):
-            message = f"A group can only end with: ) or letter! \
-                 (ex. {matcher.group(5)})!"
+            message = "A group can only end with: ) or letter!" \
+                + f" (ex. {matcher.group(5)})!"
         elif matcher.group(6):
-            message = f"~ operator cannot appear between two \
-                propositions or at the end! (ex. {matcher.group(6)})!"
+            message = "~ operator cannot appear between two propositions" \
+                + f" or at the end! (ex. {matcher.group(6)})!"
         elif matcher.group(7):
-            message = f"Binary operators can only have 2 \
-                operands! (ex. {matcher.group(7)})!"
+            message = "Binary operators can only have 2 operands!" \
+                + f" (ex. {matcher.group(7)})!"
         elif matcher.group(8):
-            message = f"Parentheses cannot be adjacent to letters: \
-                a( or )a! (ex. {matcher.group(8)})!"
+            message = "Parentheses cannot be adjacent to letters: a( or )a!" \
+                + f" (ex. {matcher.group(8)})!"
         print(message)
         return False
 
@@ -302,8 +303,7 @@ def validate_input(input_string):
             return output
         else:
             input_string = input(
-                "Type the input in allowed form!\nTry again:\n"
-            )
+                "Type valid input (see rules above)!\nTry again:\n")
 
 
 print(__doc__)
