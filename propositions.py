@@ -83,17 +83,17 @@ def extract_simple_propositions(input_string):
     Adds Proposition objects from each distinct letter to the global scope
     and into a sorted global list.
     """
-    global simple_props
-    simple_props = []
+    global simple_propositions
+    simple_propositions = []
 
     letters = set(re.findall(r"([a-z])", input_string))
     letters = sorted(list(letters))
 
     for e in letters:
-        if eval(f"'{e}' not in [prop.name for prop in simple_props]"):
+        if eval(f"'{e}' not in [prop.name for prop in simple_propositions]"):
             exec(f"global {e}; \
                 {e} = Proposition(name = '{e}'); \
-                simple_props.append({e})")
+                simple_propositions.append({e})")
 
 
 def extract_tokens(input_string):
@@ -135,24 +135,24 @@ def decompress_tokens(input_string, tokens):
 def get_table():
     """
     Generates a list with the elements of the truth table, using
-    simple_props and tokens.
+    simple_propositions and tokens.
     """
     table_header = (
-        [prop.name for prop in simple_props]
+        [prop.name for prop in simple_propositions]
         + [decompress_tokens(tokens[1][token], tokens) for token in tokens[1]]
         + [initial_string]
     )
     table = [table_header]
 
     truth_combinations = list(
-        itertools.product([True, False], repeat=len(simple_props))
+        itertools.product([True, False], repeat=len(simple_propositions))
     )
 
     for row_index in range(len(truth_combinations)):
         table.append(list(truth_combinations[row_index]))
-        for i in range(len(simple_props)):
-            simple_props[i].value = truth_combinations[row_index][i]
-        for i in range(len(simple_props), len(table_header)):
+        for i in range(len(simple_propositions)):
+            simple_propositions[i].value = truth_combinations[row_index][i]
+        for i in range(len(simple_propositions), len(table_header)):
             code = table_header[i]
             table[row_index + 1].append(eval(f"({code}).value"))
 
@@ -310,7 +310,7 @@ example = """Rules for valid input:
   + (⊕ exclusive or, xor);
   > (→ implies, if);
   < (≡ equivalent, iff);
-- allowed characters: spaces, letters, parentheses (round) and listed operators;
+- allowed characters: spaces, letters, parentheses and listed operators;
 - parentheses may be nested in other parentheses, but they must be paired.
 """
 print(example)
