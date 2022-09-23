@@ -1,5 +1,5 @@
 """
-propositions.py 1.0
+propositions.py 1.1
 @author: github.com/alin-c
 
 Displays the truth table of a given complex proposition and determines
@@ -17,7 +17,7 @@ fixed_chars = {
     "~": "¬",
     "&": " ∧ ",
     "|": " ∨ ",
-    "+": " ⊕  ",    # 2 spaces needed after it, for correct display
+    "+": " ⊕ ",
     ">": " → ",
     "<": " ≡ ",
     "(": "(",
@@ -36,55 +36,49 @@ class Proposition:
 
     def __invert__(self):
         """
-        Negation operator; displayed as ¬
+        Negation operator.
         """
         value = True if self.value is False else False
-        name = f"¬{self.name}"
-        return Proposition(value, name)
+        return Proposition(value)
 
     def __and__(self, other):
         """
-        Conjunction operator; displayed as ∧
+        Conjunction operator.
         """
         value = True if self.value and other.value else False
-        name = f"{self.name} ∧ {other.name}"
-        return Proposition(value, name)
+        return Proposition(value)
 
     def __or__(self, other):
         """
-        Disjunction operator; displayed as ∨
+        Disjunction operator.
         """
         value = True if self.value or other.value else False
-        name = f"{self.name} ∨ {other.name}"
-        return Proposition(value, name)
+        return Proposition(value)
 
     def __add__(self, other):
         """
-        Exclusive disjunction operator; displayed as ⊕
+        Exclusive disjunction operator.
         """
         value = False if self.value == other.value else True
-        name = f"{self.name} ⊕ {other.name}"
-        return Proposition(value, name)
+        return Proposition(value)
 
     def __gt__(self, other):
         """
-        Implication operator; displayed as →
+        Implication operator.
         """
         value = False if (self.value is True) and (
             other.value is False) else True
-        name = f"{self.name} → {other.name}"
-        return Proposition(value, name)
+        return Proposition(value)
 
     def __lt__(self, other):
         """
-        Equivalence operator; displayed as ≡
+        Equivalence operator.
         """
         value = True if self.value == other.value else False
-        name = f"{self.name} ≡ {other.name}"
-        return Proposition(value, name)
+        return Proposition(value)
 
 
-def extract_simple_props(input_string):
+def extract_simple_propositions(input_string):
     """
     Adds Proposition objects from each distinct letter to the global scope
     and into a sorted global list.
@@ -179,7 +173,7 @@ def display_table(table):
             # separator
             separator = "\n\t" if j == (len(table[i]) - 1) else "|"
             if i == 0:  # header
-                header = operator_replacer(table[0][j])
+                header = replace_operators(table[0][j])
                 element = f"{header:^{len(header)+2}}"
                 result += element + separator
                 column_width.append(len(element))
@@ -194,9 +188,9 @@ def display_table(table):
     return result
 
 
-def operator_replacer(input_string):
+def replace_operators(input_string):
     """
-    Replaces the input operator with the ones for proper display.
+    Replaces the input operators with the ones for proper display.
     """
     for key in fixed_chars.keys():
         input_string = input_string.replace(key, fixed_chars[key])
@@ -226,9 +220,9 @@ def get_proposition_type(table):
     return result
 
 
-def proposition_matcher(input_string):
+def parse_propositions(input_string):
     """
-    Validates the input, creates global varaibles for each simple porposition,
+    Validates the input, creates global variables for each simple proposition,
     returns an object with the tokens.
     """
     global initial_string
@@ -288,7 +282,7 @@ def proposition_matcher(input_string):
     if re.search(r"[()]", tokens[0]):
         print("Input cannot contain unmatched parentheses!")
         return False
-    extract_simple_props(input_string)
+    extract_simple_propositions(input_string)
 
     return tokens
 
@@ -298,7 +292,7 @@ def validate_input(input_string):
     Validates input using proposition_matcher().
     """
     while True:
-        output = proposition_matcher(input_string)
+        output = parse_propositions(input_string)
         if output:
             return output
         else:
@@ -308,16 +302,16 @@ def validate_input(input_string):
 
 print(__doc__)
 example = """Rules for valid input:
-- use a single letter for a simple proposition
+- use a single letter for a simple proposition;
 - logical operators are:
-  ~ (¬ not)
-  & (∧ and)
-  | (∨ or)
-  + (⊕  exclusive or, xor)
-  > (→ implies, if)
-  < (≡ equivalent, iff)
-- allowed characters: spaces, letters, parentheses (round) and listed operators
-- parentheses may be nested in other parentheses, but they must be paired
+  ~ (¬ not);
+  & (∧ and);
+  | (∨ or);
+  + (⊕ exclusive or, xor);
+  > (→ implies, if);
+  < (≡ equivalent, iff);
+- allowed characters: spaces, letters, parentheses (round) and listed operators;
+- parentheses may be nested in other parentheses, but they must be paired.
 """
 print(example)
 while True:
